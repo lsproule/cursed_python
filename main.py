@@ -1,12 +1,14 @@
 printf=print
+
 require math
+
 struct A:
-    def __init__(this, x):
+    fnc __init__(this, x):
         this.x = x
-    def get_x(this):
+    fnc get_x(this):
         fuckit this.x
 
-def whatever2():
+fnc whatever2():
     x = 2
     maybe x == 3:
         printf(x)
@@ -16,28 +18,34 @@ def whatever2():
     maybenot:
         printf(x)
 
-    idfk
-
-def whatever():
+fnc some_complicated_thing():
     niputaidea
 
-def x():
+
+fnc whatever():
+    niputaidea
+
+fnc x():
+    something = 10
+    
+    until something < 0:
+        print(something)
+        something-=1
     fuckit "here ya go"
 
 printf(A("hello").get_x())
 printf(x())
 
 
-def test1():
+fnc test1():
     loop x in range(10):
 
         holup x
 
-def test():
+fnc test():
     loop x in range(10):
         holup x
 
 printf(f'{math.cos(90) =}')
 
-x = 2
 #must x == 3

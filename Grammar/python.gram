@@ -124,13 +124,13 @@ simple_stmt[stmt_ty] (memo):
     | &'nonlocal' nonlocal_stmt
 
 compound_stmt[stmt_ty]:
-    | &('def'  |  '@' | 'async') function_def
+    | &('def' | 'fnc' |  '@' | 'async') function_def
     | &('if' | 'maybe' ) if_stmt
     | &('class'| 'struct' | '@') class_def
     | &('with' | 'async') with_stmt
     | &('for' | 'async' | 'loop') for_stmt
     | &'try' try_stmt
-    | &'while' while_stmt
+    | &('while' | 'until') while_stmt
     | match_stmt
 
 # SIMPLE STATEMENTS
@@ -191,8 +191,9 @@ del_stmt[stmt_ty]:
 
 yield_stmt[stmt_ty]: y=yield_expr { _PyAST_Expr(y, EXTRA) }
 
-assert_stmt[stmt_ty]: 'assert' a=expression b=[',' z=expression { z }] { _PyAST_Assert(a, b, EXTRA) }
-
+assert_stmt[stmt_ty]: 
+  | 'assert' a=expression b=[',' z=expression { z }] { _PyAST_Assert(a, b, EXTRA) }
+  | 'must' a=expression b=[',' z=expression { z }] { _PyAST_Assert(a, b, EXTRA) }
 import_stmt[stmt_ty]:
     | invalid_import
     | import_name
@@ -289,6 +290,20 @@ function_def_raw[stmt_ty]:
                             (params) ? params : CHECK(arguments_ty, _PyPegen_empty_arguments(p)),
                             b, NULL, a, NEW_TYPE_COMMENT(p, tc), t, EXTRA)
         ) }
+    | 'fnc' n=NAME t=[type_params] &&'(' params=[params] ')' a=['->' z=expression { z }] &&':' tc=[func_type_comment] b=block {
+        _PyAST_FunctionDef(n->v.Name.id,
+                        (params) ? params : CHECK(arguments_ty, _PyPegen_empty_arguments(p)),
+                        b, NULL, a, NEW_TYPE_COMMENT(p, tc), t, EXTRA) }
+    | 'async' 'fnc' n=NAME t=[type_params] &&'(' params=[params] ')' a=['->' z=expression { z }] &&':' tc=[func_type_comment] b=block {
+        CHECK_VERSION(
+            stmt_ty,
+            5,
+            "Async functions are",
+            _PyAST_AsyncFunctionDef(n->v.Name.id,
+                            (params) ? params : CHECK(arguments_ty, _PyPegen_empty_arguments(p)),
+                            b, NULL, a, NEW_TYPE_COMMENT(p, tc), t, EXTRA)
+        ) }
+
 
 
 # Function parameters
@@ -394,6 +409,7 @@ else_block[asdl_stmt_seq*]:
 while_stmt[stmt_ty]:
     | invalid_while_stmt
     | 'while' a=named_expression ':' b=block c=[else_block] { _PyAST_While(a, b, c, EXTRA) }
+    | 'until' a=named_expression ':' b=block c=[else_block] { _PyAST_While(a, b, c, EXTRA) }
 
 # For statement
 # -------------
@@ -1395,6 +1411,8 @@ invalid_for_stmt:
         RAISE_INDENTATION_ERROR("expected an indented block after 'for' statement on line %d", a->lineno) }
 invalid_def_raw:
     | ['async'] a='def' NAME '(' [params] ')' ['->' expression] ':' NEWLINE !INDENT {
+        RAISE_INDENTATION_ERROR("expected an indented block after function definition on line %d", a->lineno) }
+    | ['async'] a='fnc' NAME '(' [params] ')' ['->' expression] ':' NEWLINE !INDENT {
         RAISE_INDENTATION_ERROR("expected an indented block after function definition on line %d", a->lineno) }
 invalid_class_def_raw:
     | 'class' NAME ['(' [arguments] ')'] NEWLINE { RAISE_SYNTAX_ERROR("expected ':'") }
