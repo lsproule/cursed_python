@@ -203,7 +203,7 @@ LIPO_INTEL64_FLAGS=
 RUNSHARED=       
 
 # ensurepip options
-ENSUREPIP=      upgrade
+ENSUREPIP=      install
 
 # Internal static libraries
 LIBMPDEC_A= Modules/_decimal/libmpdec/libmpdec.a
@@ -356,7 +356,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	
+CONFIG_ARGS=	 '--with-ensurepip=install'
 
 
 # Subdirectories with code
