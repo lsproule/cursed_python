@@ -1,0 +1,14 @@
+struct A:
+    def __init__(this, x):
+        this.x = x
+    def get_x(this):
+        fuckit this.x
+
+printf=print
+
+def x():
+    fuckit "here ya go"
+
+printf(A("hello").get_x())
+printf(x())
+
