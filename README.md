@@ -169,11 +169,11 @@ dictionary in python
 ```python
 dict(zip(['a', 'b',  'c'],[1,2,3]))
 ```
-objs^1 in cursed python,
+objs<sup>1</sup> in cursed python,
 
 
 ```
 obj(ipairs(['a', 'b',  'c'],[1,2,3]))
 ```
-note^1 ps don't confuse objs with objects not the same thing
+note<sup>1</sup> ps don't confuse objs with objects not the same thing
 
