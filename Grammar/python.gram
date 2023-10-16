@@ -744,7 +744,6 @@ yield_expr[expr_ty]:
     | 'yield' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
     | 'holup' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
     | 'espera' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
-    | 'espera' 'desde' a=expression { _PyAST_YieldFrom(a, EXTRA) }
 star_expressions[expr_ty]:
     | a=star_expression b=(',' c=star_expression { c })+ [','] {
         _PyAST_Tuple(CHECK(asdl_expr_seq*, _PyPegen_seq_insert_in_front(p, a, b)), Load, EXTRA) }

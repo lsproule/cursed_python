@@ -59,7 +59,6 @@ static KeywordToken *reserved_keywords[] = {
         {"while", 713},
         {"until", 715},
         {"False", 664},
-        {"desde", 631},
         {"await", 641},
         {NULL, -1},
     },
@@ -70,7 +69,7 @@ static KeywordToken *reserved_keywords[] = {
         {"espera", 630},
         {"assert", 546},
         {"global", 543},
-        {"Struct", 561},
+        {"struct", 561},
         {"except", 703},
         {"ohshit", 611},
         {"lambda", 661},
@@ -2114,7 +2113,7 @@ simple_stmt_rule(Parser *p)
 // compound_stmt:
 //     | &('def' | 'fnc' | '@' | 'async') function_def
 //     | &('if' | 'Maybe') if_stmt
-//     | &('class' | 'Struct' | '@') class_def
+//     | &('class' | 'struct' | '@') class_def
 //     | &('with' | 'async') with_stmt
 //     | &('for' | 'async' | 'loop') for_stmt
 //     | &('try' | 'holdmybeer') try_stmt
@@ -2174,12 +2173,12 @@ compound_stmt_rule(Parser *p)
         D(fprintf(stderr, "%*c%s compound_stmt[%d-%d]: %s failed!\n", p->level, ' ',
                   p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "&('if' | 'Maybe') if_stmt"));
     }
-    { // &('class' | 'Struct' | '@') class_def
+    { // &('class' | 'struct' | '@') class_def
         if (p->error_indicator) {
             p->level--;
             return NULL;
         }
-        D(fprintf(stderr, "%*c> compound_stmt[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "&('class' | 'Struct' | '@') class_def"));
+        D(fprintf(stderr, "%*c> compound_stmt[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "&('class' | 'struct' | '@') class_def"));
         stmt_ty class_def_var;
         if (
             _PyPegen_lookahead(1, _tmp_14_rule, p)
@@ -2187,13 +2186,13 @@ compound_stmt_rule(Parser *p)
             (class_def_var = class_def_rule(p))  // class_def
         )
         {
-            D(fprintf(stderr, "%*c+ compound_stmt[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "&('class' | 'Struct' | '@') class_def"));
+            D(fprintf(stderr, "%*c+ compound_stmt[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "&('class' | 'struct' | '@') class_def"));
             _res = class_def_var;
             goto done;
         }
         p->mark = _mark;
         D(fprintf(stderr, "%*c%s compound_stmt[%d-%d]: %s failed!\n", p->level, ' ',
-                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "&('class' | 'Struct' | '@') class_def"));
+                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "&('class' | 'struct' | '@') class_def"));
     }
     { // &('with' | 'async') with_stmt
         if (p->error_indicator) {
@@ -4592,7 +4591,7 @@ class_def_rule(Parser *p)
 // class_def_raw:
 //     | invalid_class_def_raw
 //     | 'class' NAME type_params? ['(' arguments? ')'] ':' block
-//     | 'Struct' NAME type_params? ['(' arguments? ')'] ':' block
+//     | 'struct' NAME type_params? ['(' arguments? ')'] ':' block
 static stmt_ty
 class_def_raw_rule(Parser *p)
 {
@@ -4681,12 +4680,12 @@ class_def_raw_rule(Parser *p)
         D(fprintf(stderr, "%*c%s class_def_raw[%d-%d]: %s failed!\n", p->level, ' ',
                   p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'class' NAME type_params? ['(' arguments? ')'] ':' block"));
     }
-    { // 'Struct' NAME type_params? ['(' arguments? ')'] ':' block
+    { // 'struct' NAME type_params? ['(' arguments? ')'] ':' block
         if (p->error_indicator) {
             p->level--;
             return NULL;
         }
-        D(fprintf(stderr, "%*c> class_def_raw[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'Struct' NAME type_params? ['(' arguments? ')'] ':' block"));
+        D(fprintf(stderr, "%*c> class_def_raw[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'struct' NAME type_params? ['(' arguments? ')'] ':' block"));
         Token * _keyword;
         Token * _literal;
         expr_ty a;
@@ -4694,7 +4693,7 @@ class_def_raw_rule(Parser *p)
         asdl_stmt_seq* c;
         void *t;
         if (
-            (_keyword = _PyPegen_expect_token(p, 561))  // token='Struct'
+            (_keyword = _PyPegen_expect_token(p, 561))  // token='struct'
             &&
             (a = _PyPegen_name_token(p))  // NAME
             &&
@@ -4707,7 +4706,7 @@ class_def_raw_rule(Parser *p)
             (c = block_rule(p))  // block
         )
         {
-            D(fprintf(stderr, "%*c+ class_def_raw[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'Struct' NAME type_params? ['(' arguments? ')'] ':' block"));
+            D(fprintf(stderr, "%*c+ class_def_raw[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'struct' NAME type_params? ['(' arguments? ')'] ':' block"));
             Token *_token = _PyPegen_get_last_nonnwhitespace_token(p);
             if (_token == NULL) {
                 p->level--;
@@ -4727,7 +4726,7 @@ class_def_raw_rule(Parser *p)
         }
         p->mark = _mark;
         D(fprintf(stderr, "%*c%s class_def_raw[%d-%d]: %s failed!\n", p->level, ' ',
-                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'Struct' NAME type_params? ['(' arguments? ')'] ':' block"));
+                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'struct' NAME type_params? ['(' arguments? ')'] ':' block"));
     }
     _res = NULL;
   done:
@@ -12391,7 +12390,7 @@ expression_rule(Parser *p)
 //     | 'yield' star_expressions?
 //     | 'holup' star_expressions?
 //     | 'espera' star_expressions?
-//     | 'espera' 'desde' expression
+//     | 'espera' 'from' expression
 static expr_ty
 yield_expr_rule(Parser *p)
 {
@@ -12560,24 +12559,24 @@ yield_expr_rule(Parser *p)
         D(fprintf(stderr, "%*c%s yield_expr[%d-%d]: %s failed!\n", p->level, ' ',
                   p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'espera' star_expressions?"));
     }
-    { // 'espera' 'desde' expression
+    { // 'espera' 'from' expression
         if (p->error_indicator) {
             p->level--;
             return NULL;
         }
-        D(fprintf(stderr, "%*c> yield_expr[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'espera' 'desde' expression"));
+        D(fprintf(stderr, "%*c> yield_expr[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'espera' 'from' expression"));
         Token * _keyword;
         Token * _keyword_1;
         expr_ty a;
         if (
             (_keyword = _PyPegen_expect_token(p, 630))  // token='espera'
             &&
-            (_keyword_1 = _PyPegen_expect_token(p, 631))  // token='desde'
+            (_keyword_1 = _PyPegen_expect_token(p, 670))  // token='from'
             &&
             (a = expression_rule(p))  // expression
         )
         {
-            D(fprintf(stderr, "%*c+ yield_expr[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'espera' 'desde' expression"));
+            D(fprintf(stderr, "%*c+ yield_expr[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'espera' 'from' expression"));
             Token *_token = _PyPegen_get_last_nonnwhitespace_token(p);
             if (_token == NULL) {
                 p->level--;
@@ -12597,7 +12596,7 @@ yield_expr_rule(Parser *p)
         }
         p->mark = _mark;
         D(fprintf(stderr, "%*c%s yield_expr[%d-%d]: %s failed!\n", p->level, ' ',
-                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'espera' 'desde' expression"));
+                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'espera' 'from' expression"));
     }
     _res = NULL;
   done:
@@ -27423,7 +27422,7 @@ _tmp_13_rule(Parser *p)
     return _res;
 }
 
-// _tmp_14: 'class' | 'Struct' | '@'
+// _tmp_14: 'class' | 'struct' | '@'
 static void *
 _tmp_14_rule(Parser *p)
 {
@@ -27455,24 +27454,24 @@ _tmp_14_rule(Parser *p)
         D(fprintf(stderr, "%*c%s _tmp_14[%d-%d]: %s failed!\n", p->level, ' ',
                   p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'class'"));
     }
-    { // 'Struct'
+    { // 'struct'
         if (p->error_indicator) {
             p->level--;
             return NULL;
         }
-        D(fprintf(stderr, "%*c> _tmp_14[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'Struct'"));
+        D(fprintf(stderr, "%*c> _tmp_14[%d-%d]: %s\n", p->level, ' ', _mark, p->mark, "'struct'"));
         Token * _keyword;
         if (
-            (_keyword = _PyPegen_expect_token(p, 561))  // token='Struct'
+            (_keyword = _PyPegen_expect_token(p, 561))  // token='struct'
         )
         {
-            D(fprintf(stderr, "%*c+ _tmp_14[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'Struct'"));
+            D(fprintf(stderr, "%*c+ _tmp_14[%d-%d]: %s succeeded!\n", p->level, ' ', _mark, p->mark, "'struct'"));
             _res = _keyword;
             goto done;
         }
         p->mark = _mark;
         D(fprintf(stderr, "%*c%s _tmp_14[%d-%d]: %s failed!\n", p->level, ' ',
-                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'Struct'"));
+                  p->error_indicator ? "ERROR!" : "-", _mark, p->mark, "'struct'"));
     }
     { // '@'
         if (p->error_indicator) {

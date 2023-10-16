@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3.13
+#!/usr/local/bin/python3.13t
 # -*- python -*-
 
 # Keep this script in sync with python-config.sh.in

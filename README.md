@@ -85,7 +85,7 @@ for x,y in zip(xs,ys):
 ```
 we can now say
 
-```
+```python
 xs = [1,2,3]
 ys = [3,4,5]
 loop x, y in ipairs(xs, ys):
@@ -126,7 +126,7 @@ while x !=100
 
 but ruby really always had the right idea.
 
-```
+```python
 until not (x == 100):
     x+=1
     print(x)
@@ -142,7 +142,7 @@ from functools import reduce
 
 we know javascript developers have never seen an import statement, so
 
-```
+```python
 require itertools
 from functools require reduce
 xs = [1, 3, 5, 6, 2] 
@@ -159,7 +159,7 @@ list(range(10))
 ```
 arr in cursed python
 
-```
+```python
 arr(range(10))
 ```
 
@@ -172,12 +172,47 @@ dict(zip(['a', 'b',  'c'],[1,2,3]))
 objs<sup>1</sup> in cursed python,
 
 
-```
+```python
 obj(ipairs(['a', 'b',  'c'],[1,2,3]))
 ```
 note<sup>1</sup> ps don't confuse objs with objects not the same thing
 
 ---
+# Return
+
+at this point returning from a function should be normal, but we couldn't let it alone like that
+
+```python
+def test():
+    return "here you go"
+```
+
+```python
+fnc test():
+    fuckit "here you go"
+```
+
+also for generators with
+# yield
+
+```python
+def generator(): 
+    for x in range(10):
+        yield x
+
+
+```
+we have
+```python
+fnc generator(): 
+    loop x in xrange(10):
+        expera x
+
+fnc generator_holup(): 
+    loop x in xrange(10):
+        holup x
+
+```
 
 this whole project was made without the permission of Guido... I am sure he would be
 extremely disappointed in me. BTW not a joke repo really works!

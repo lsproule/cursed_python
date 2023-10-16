@@ -1617,7 +1617,7 @@
 /* #undef Py_HASH_ALGORITHM */
 
 /* Define if you want to disable the GIL */
-/* #undef Py_NOGIL */
+#define Py_NOGIL 1
 
 /* Define if you want to enable internal statistics gathering. */
 /* #undef Py_STATS */

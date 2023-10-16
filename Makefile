@@ -40,7 +40,7 @@ CXX=		g++
 LINKCC=		$(PURIFY) $(CC)
 AR=		ar
 READELF=	@READELF@
-SOABI=		cpython-313-x86_64-linux-gnu
+SOABI=		cpython-313t-x86_64-linux-gnu
 LDVERSION=	$(VERSION)$(ABIFLAGS)
 LIBPYTHON=	
 GITVERSION=	git --git-dir $(srcdir)/.git rev-parse --short HEAD
@@ -151,7 +151,7 @@ INCLUDEDIR=	${prefix}/include
 CONFINCLUDEDIR=	$(exec_prefix)/include
 PLATLIBDIR=	lib
 SCRIPTDIR=	$(prefix)/$(PLATLIBDIR)
-ABIFLAGS=	
+ABIFLAGS=	t
 # executable name for shebangs
 EXENAME=	$(BINDIR)/python$(LDVERSION)$(EXE)
 # Variable used by ensurepip
@@ -165,7 +165,7 @@ CONFINCLUDEPY=	$(CONFINCLUDEDIR)/python$(LDVERSION)
 
 # Symbols used for using shared libraries
 SHLIB_SUFFIX=	.so
-EXT_SUFFIX=	.cpython-313-x86_64-linux-gnu.so
+EXT_SUFFIX=	.cpython-313t-x86_64-linux-gnu.so
 LDSHARED=	$(CC) -shared $(PY_LDFLAGS)
 BLDSHARED=	$(CC) -shared $(PY_CORE_LDFLAGS)
 LDCXXSHARED=	$(CXX) -shared
@@ -357,7 +357,7 @@ EXEMODE=	755
 FILEMODE=	644
 
 # configure script arguments
-CONFIG_ARGS=	 '--with-ensurepip=install'
+CONFIG_ARGS=	 '--disable-gil' '--with-ensurepip=install'
 
 
 # Subdirectories with code
@@ -407,7 +407,7 @@ BUILDPYTHON=	python$(BUILDEXE)
 
 HOSTRUNNER= 
 
-PYTHON_FOR_REGEN?=python3.11
+PYTHON_FOR_REGEN?=python3.13
 UPDATE_FILE=$(PYTHON_FOR_REGEN) $(srcdir)/Tools/build/update_file.py
 PYTHON_FOR_BUILD=./$(BUILDPYTHON) -E
 # Single-platform builds depend on $(BUILDPYTHON). Cross builds use an
