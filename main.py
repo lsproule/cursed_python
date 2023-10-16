@@ -9,12 +9,12 @@ struct A:
 
 fnc whatever2():
     x = 2
-    maybe x == 3:
+    Maybe x == 3:
         printf(x)
-    alsomaybe x == 2:
+    AlsoMaybe x == 2:
         printf('in here')
         printf(x)
-    maybenot:
+    MaybeNot:
         printf(x)
 
 fnc some_complicated_thing():
@@ -25,6 +25,7 @@ fnc whatever():
     niputaidea
 
 fnc x():
+    something=10
     until (something  !=0 ):
         print(something)
         something-=1

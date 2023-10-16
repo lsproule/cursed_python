@@ -125,7 +125,7 @@ simple_stmt[stmt_ty] (memo):
 
 compound_stmt[stmt_ty]:
     | &('def' | 'fnc' |  '@' | 'async') function_def
-    | &('if' | 'maybe' ) if_stmt
+    | &('if' | 'Maybe' ) if_stmt
     | &('class'| 'struct' | '@') class_def
     | &('with' | 'async') with_stmt
     | &('for' | 'async' | 'loop') for_stmt
@@ -394,21 +394,21 @@ if_stmt[stmt_ty]:
     | 'if' a=named_expression ':' b=block c=elif_stmt {
         _PyAST_If(a, b, CHECK(asdl_stmt_seq*, _PyPegen_singleton_seq(p, c)), EXTRA) }
     | 'if' a=named_expression ':' b=block c=[else_block] { _PyAST_If(a, b, c, EXTRA) }
-    | 'maybe' a=named_expression ':' b=block c=elif_stmt {
+    | 'Maybe' a=named_expression ':' b=block c=elif_stmt {
         _PyAST_If(a, b, CHECK(asdl_stmt_seq*, _PyPegen_singleton_seq(p, c)), EXTRA) }
-    | 'maybe' a=named_expression ':' b=block c=[else_block] { _PyAST_If(a, b, c, EXTRA) }
+    | 'Maybe' a=named_expression ':' b=block c=[else_block] { _PyAST_If(a, b, c, EXTRA) }
 elif_stmt[stmt_ty]:
     | invalid_elif_stmt
     | 'elif' a=named_expression ':' b=block c=elif_stmt {
         _PyAST_If(a, b, CHECK(asdl_stmt_seq*, _PyPegen_singleton_seq(p, c)), EXTRA) }
     | 'elif' a=named_expression ':' b=block c=[else_block] { _PyAST_If(a, b, c, EXTRA) }
-    | 'alsomaybe' a=named_expression ':' b=block c=elif_stmt {
+    | 'AlsoMaybe' a=named_expression ':' b=block c=elif_stmt {
         _PyAST_If(a, b, CHECK(asdl_stmt_seq*, _PyPegen_singleton_seq(p, c)), EXTRA) }
-    | 'alsomaybe' a=named_expression ':' b=block c=[else_block] { _PyAST_If(a, b, c, EXTRA) }
+    | 'AlsoMaybe' a=named_expression ':' b=block c=[else_block] { _PyAST_If(a, b, c, EXTRA) }
 else_block[asdl_stmt_seq*]:
     | invalid_else_stmt
     | 'else' &&':' b=block { b }
-    | 'maybenot' &&':' b=block { b }
+    | 'MaybeNot' &&':' b=block { b }
 
 
 # While statement
@@ -743,8 +743,8 @@ yield_expr[expr_ty]:
     | 'yield' 'from' a=expression { _PyAST_YieldFrom(a, EXTRA) }
     | 'yield' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
     | 'holup' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
-    | 'expera' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
-
+    | 'espera' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
+    | 'espera' 'desde' a=expression { _PyAST_YieldFrom(a, EXTRA) }
 star_expressions[expr_ty]:
     | a=star_expression b=(',' c=star_expression { c })+ [','] {
         _PyAST_Tuple(CHECK(asdl_expr_seq*, _PyPegen_seq_insert_in_front(p, a, b)), Load, EXTRA) }
