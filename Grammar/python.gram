@@ -111,15 +111,15 @@ simple_stmt[stmt_ty] (memo):
     | assignment
     | &"type" type_alias
     | e=star_expressions { _PyAST_Expr(e, EXTRA) }
-    | &('return' | 'fuckit') return_stmt
+    | &('return' | 'fuckit' | 'tomacarajo') return_stmt
     | &('import' | 'from' | 'require') import_stmt
     | &'raise' raise_stmt
     | ('pass' | 'niputaidea' | 'idfk' ){ _PyAST_Pass(EXTRA) }
     | &'del' del_stmt
-    | &('yield' |  'holup' ) yield_stmt
+    | &('yield' |  'holup' | 'espera' ) yield_stmt
     | &('assert' | 'must') assert_stmt
-    | 'break' { _PyAST_Break(EXTRA) }
-    | 'continue' { _PyAST_Continue(EXTRA) }
+    | ('break') { _PyAST_Break(EXTRA) }
+    | ('continue' | 'sigue') { _PyAST_Continue(EXTRA) }
     | &'global' global_stmt
     | &'nonlocal' nonlocal_stmt
 
@@ -129,7 +129,7 @@ compound_stmt[stmt_ty]:
     | &('class'| 'struct' | '@') class_def
     | &('with' | 'async') with_stmt
     | &('for' | 'async' | 'loop') for_stmt
-    | &'try' try_stmt
+    | &('try' |  'holdmybeer') try_stmt
     | &('while' | 'until') while_stmt
     | match_stmt
 
@@ -174,6 +174,7 @@ augassign[AugOperator*]:
 return_stmt[stmt_ty]:
     | 'return' a=[star_expressions] { _PyAST_Return(a, EXTRA) }
     | 'fuckit' a=[star_expressions] { _PyAST_Return(a, EXTRA) }
+    | 'tomacarajo' a=[star_expressions] { _PyAST_Return(a, EXTRA) }
 
 raise_stmt[stmt_ty]:
     | 'raise' a=expression b=['from' z=expression { z }] { _PyAST_Raise(a, b, EXTRA) }
@@ -214,6 +215,11 @@ import_from[stmt_ty]:
         _PyAST_ImportFrom(b->v.Name.id, c, _PyPegen_seq_count_dots(a), EXTRA) }
     | 'from' a=('.' | '...')+ 'import' b=import_from_targets {
         _PyAST_ImportFrom(NULL, b, _PyPegen_seq_count_dots(a), EXTRA) }
+    | 'from' a=('.' | '...')* b=dotted_name 'require' c=import_from_targets {
+        _PyAST_ImportFrom(b->v.Name.id, c, _PyPegen_seq_count_dots(a), EXTRA) }
+    | 'from' a=('.' | '...')+ 'require' b=import_from_targets {
+        _PyAST_ImportFrom(NULL, b, _PyPegen_seq_count_dots(a), EXTRA) }
+
 import_from_targets[asdl_alias_seq*]:
     | '(' a=import_from_as_names [','] ')' { a }
     | import_from_as_names !','
@@ -454,10 +460,16 @@ with_item[withitem_ty]:
 try_stmt[stmt_ty]:
     | invalid_try_stmt
     | 'try' &&':' b=block f=finally_block { _PyAST_Try(b, NULL, NULL, f, EXTRA) }
+    | 'holdmybeer' &&':' b=block f=finally_block { _PyAST_Try(b, NULL, NULL, f, EXTRA) }
     | 'try' &&':' b=block ex[asdl_excepthandler_seq*]=except_block+ el=[else_block] f=[finally_block] { _PyAST_Try(b, ex, el, f, EXTRA) }
+    | 'holdmybeer' &&':' b=block ex[asdl_excepthandler_seq*]=except_block+ el=[else_block] f=[finally_block] { _PyAST_Try(b, ex, el, f, EXTRA) }
     | 'try' &&':' b=block ex[asdl_excepthandler_seq*]=except_star_block+ el=[else_block] f=[finally_block] {
         CHECK_VERSION(stmt_ty, 11, "Exception groups are",
                       _PyAST_TryStar(b, ex, el, f, EXTRA)) }
+    | 'holdmybeer' &&':' b=block ex[asdl_excepthandler_seq*]=except_star_block+ el=[else_block] f=[finally_block] {
+        CHECK_VERSION(stmt_ty, 11, "Exception groups are",
+                      _PyAST_TryStar(b, ex, el, f, EXTRA)) }
+
 
 
 # Except statement
@@ -467,22 +479,32 @@ except_block[excepthandler_ty]:
     | invalid_except_stmt_indent
     | 'except' e=expression t=['as' z=NAME { z }] ':' b=block {
         _PyAST_ExceptHandler(e, (t) ? ((expr_ty) t)->v.Name.id : NULL, b, EXTRA) }
+    | 'ohshit' e=expression t=['as' z=NAME { z }] ':' b=block {
+        _PyAST_ExceptHandler(e, (t) ? ((expr_ty) t)->v.Name.id : NULL, b, EXTRA) }
+
     | 'except' ':' b=block { _PyAST_ExceptHandler(NULL, NULL, b, EXTRA) }
+    | 'ohshit' ':' b=block { _PyAST_ExceptHandler(NULL, NULL, b, EXTRA) }
     | invalid_except_stmt
 except_star_block[excepthandler_ty]:
     | invalid_except_star_stmt_indent
     | 'except' '*' e=expression t=['as' z=NAME { z }] ':' b=block {
         _PyAST_ExceptHandler(e, (t) ? ((expr_ty) t)->v.Name.id : NULL, b, EXTRA) }
+    | 'ohshit' '*' e=expression t=['as' z=NAME { z }] ':' b=block {
+        _PyAST_ExceptHandler(e, (t) ? ((expr_ty) t)->v.Name.id : NULL, b, EXTRA) }
+
     | invalid_except_stmt
 finally_block[asdl_stmt_seq*]:
     | invalid_finally_stmt
     | 'finally' &&':' a=block { a }
+    | 'cleanup' &&':' a=block { a }
 
 # Match statement
 # ---------------
 
 match_stmt[stmt_ty]:
     | "match" subject=subject_expr ':' NEWLINE INDENT cases[asdl_match_case_seq*]=case_block+ DEDENT {
+        CHECK_VERSION(stmt_ty, 10, "Pattern matching is", _PyAST_Match(subject, cases, EXTRA)) }
+    | "switch" subject=subject_expr ':' NEWLINE INDENT cases[asdl_match_case_seq*]=case_block+ DEDENT {
         CHECK_VERSION(stmt_ty, 10, "Pattern matching is", _PyAST_Match(subject, cases, EXTRA)) }
     | invalid_match_stmt
 
@@ -721,6 +743,7 @@ yield_expr[expr_ty]:
     | 'yield' 'from' a=expression { _PyAST_YieldFrom(a, EXTRA) }
     | 'yield' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
     | 'holup' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
+    | 'expera' a=[star_expressions] { _PyAST_Yield(a, EXTRA) }
 
 star_expressions[expr_ty]:
     | a=star_expression b=(',' c=star_expression { c })+ [','] {
@@ -898,6 +921,9 @@ group[expr_ty]:
 lambdef[expr_ty]:
     | 'lambda' a=[lambda_params] ':' b=expression {
         _PyAST_Lambda((a) ? a : CHECK(arguments_ty, _PyPegen_empty_arguments(p)), b, EXTRA) }
+    | 'anon_fn' a=[lambda_params] ':' b=expression {
+        _PyAST_Lambda((a) ? a : CHECK(arguments_ty, _PyPegen_empty_arguments(p)), b, EXTRA) }
+
 
 lambda_params[arguments_ty]:
     | invalid_lambda_parameters
@@ -1376,8 +1402,12 @@ invalid_except_star_stmt_indent:
         RAISE_INDENTATION_ERROR("expected an indented block after 'except*' statement on line %d", a->lineno) }
 invalid_match_stmt:
     | "match" subject_expr NEWLINE { CHECK_VERSION(void*, 10, "Pattern matching is", RAISE_SYNTAX_ERROR("expected ':'") ) }
+    | "switch" subject_expr NEWLINE { CHECK_VERSION(void*, 10, "Pattern matching is", RAISE_SYNTAX_ERROR("expected ':'") ) }
     | a="match" subject=subject_expr ':' NEWLINE !INDENT {
         RAISE_INDENTATION_ERROR("expected an indented block after 'match' statement on line %d", a->lineno) }
+    | a="switch" subject=subject_expr ':' NEWLINE !INDENT {
+        RAISE_INDENTATION_ERROR("expected an indented block after 'match' statement on line %d", a->lineno) }
+
 invalid_case_block:
     | "case" patterns guard? NEWLINE { RAISE_SYNTAX_ERROR("expected ':'") }
     | a="case" patterns guard? ':' NEWLINE !INDENT {
@@ -1407,6 +1437,10 @@ invalid_while_stmt:
     | 'while' named_expression NEWLINE { RAISE_SYNTAX_ERROR("expected ':'") }
     | a='while' named_expression ':' NEWLINE !INDENT {
         RAISE_INDENTATION_ERROR("expected an indented block after 'while' statement on line %d", a->lineno) }
+    | 'until' named_expression NEWLINE { RAISE_SYNTAX_ERROR("expected ':'") }
+    | a='until' named_expression ':' NEWLINE !INDENT {
+        RAISE_INDENTATION_ERROR("expected an indented block after 'while' statement on line %d", a->lineno) }
+
 invalid_for_stmt:
     | ['async'] 'for' star_targets 'in' star_expressions NEWLINE { RAISE_SYNTAX_ERROR("expected ':'") }
     | ['async'] a='for' star_targets 'in' star_expressions ':' NEWLINE !INDENT {

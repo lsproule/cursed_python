@@ -1,6 +1,5 @@
 printf=print
-
-require math
+from math require cos
 
 struct A:
     fnc __init__(this, x):
@@ -26,12 +25,10 @@ fnc whatever():
     niputaidea
 
 fnc x():
-    something = 10
-    
-    until something < 0:
+    until (something  !=0 ):
         print(something)
         something-=1
-    fuckit "here ya go"
+    fuckit "tomalo"
 
 printf(A("hello").get_x())
 printf(x())
@@ -39,13 +36,17 @@ printf(x())
 
 fnc test1():
     loop x in range(10):
-
         holup x
 
 fnc test():
-    loop x in range(10):
-        holup x
+    xs = arr([1, 2, 3, 4, 5])
+    ys = arr([10, 20, 30, 40, 50])
+    loop x, y in group(xs,ys):
+        espera x, y
 
-printf(f'{math.cos(90) =}')
+printf(f'{cos(90) = }')
+x = 10
+switch x:
+    case 10:
+        print("switch case  works")
 
-#must x == 3

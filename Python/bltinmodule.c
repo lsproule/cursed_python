@@ -2193,6 +2193,7 @@ builtin_input_impl(PyObject *module, PyObject *prompt)
         const char *stdin_encoding_str, *stdin_errors_str;
         PyObject *result;
         size_t len;
+        size_t size;
 
         /* stdin is a text stream, so it must have an encoding. */
         stdin_encoding = PyObject_GetAttr(fin, &_Py_ID(encoding));
@@ -2276,6 +2277,7 @@ builtin_input_impl(PyObject *module, PyObject *prompt)
         }
 
         len = strlen(s);
+        size = strlen(s);
         if (len == 0) {
             PyErr_SetNone(PyExc_EOFError);
             result = NULL;
@@ -3122,12 +3124,13 @@ _PyBuiltin_Init(PyInterpreterState *interp)
     SETBUILTIN("False",                 Py_False);
     SETBUILTIN("True",                  Py_True);
     SETBUILTIN("bool",                  &PyBool_Type);
-    SETBUILTIN("memoryview",        &PyMemoryView_Type);
+    SETBUILTIN("memoryview",            &PyMemoryView_Type);
     SETBUILTIN("bytearray",             &PyByteArray_Type);
     SETBUILTIN("bytes",                 &PyBytes_Type);
     SETBUILTIN("classmethod",           &PyClassMethod_Type);
     SETBUILTIN("complex",               &PyComplex_Type);
     SETBUILTIN("dict",                  &PyDict_Type);
+    SETBUILTIN("obj",                   &PyDict_Type);
     SETBUILTIN("enumerate",             &PyEnum_Type);
     SETBUILTIN("filter",                &PyFilter_Type);
     SETBUILTIN("float",                 &PyFloat_Type);
@@ -3135,9 +3138,11 @@ _PyBuiltin_Init(PyInterpreterState *interp)
     SETBUILTIN("property",              &PyProperty_Type);
     SETBUILTIN("int",                   &PyLong_Type);
     SETBUILTIN("list",                  &PyList_Type);
+    SETBUILTIN("arr",                  &PyList_Type);
     SETBUILTIN("map",                   &PyMap_Type);
     SETBUILTIN("object",                &PyBaseObject_Type);
     SETBUILTIN("range",                 &PyRange_Type);
+    SETBUILTIN("xrange",                &PyRange_Type);
     SETBUILTIN("reversed",              &PyReversed_Type);
     SETBUILTIN("set",                   &PySet_Type);
     SETBUILTIN("slice",                 &PySlice_Type);
@@ -3147,6 +3152,7 @@ _PyBuiltin_Init(PyInterpreterState *interp)
     SETBUILTIN("tuple",                 &PyTuple_Type);
     SETBUILTIN("type",                  &PyType_Type);
     SETBUILTIN("zip",                   &PyZip_Type);
+    SETBUILTIN("group",                 &PyZip_Type);
     debug = PyBool_FromLong(config->optimization_level == 0);
     if (PyDict_SetItemString(dict, "__debug__", debug) < 0) {
         Py_DECREF(debug);
