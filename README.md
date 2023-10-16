@@ -177,3 +177,9 @@ obj(ipairs(['a', 'b',  'c'],[1,2,3]))
 ```
 note<sup>1</sup> ps don't confuse objs with objects not the same thing
 
+---
+
+this whole project was made without the permission of Guido... I am sure he would be
+extremely disappointed in me. BTW not a joke repo really works!
+look out for version 2.0
+if guido doesn't ban me
