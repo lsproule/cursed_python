@@ -167,13 +167,13 @@ arr(range(10))
 
 dictionary in python
 ```python
-dict(zip(['a', 'b',  'c'],[1,2,3]))
+dict(zip(['a', 'b',  'c'],[1,2,3])) # {'a': 1, 'b': 2, 'c': 3}
 ```
 objs<sup>1</sup> in cursed python,
 
 
 ```python
-obj(ipairs(['a', 'b',  'c'],[1,2,3]))
+obj(ipairs(['a', 'b',  'c'],[1,2,3])) # {'a': 1, 'b': 2, 'c': 3}
 ```
 note<sup>1</sup> ps don't confuse objs with objects not the same thing
 
